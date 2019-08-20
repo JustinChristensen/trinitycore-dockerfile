@@ -4,10 +4,8 @@ LABEL \
 maintainer="justin@promise.io" \
 version="1.0.0"
 
-ARG BIN_DIR="/usr/local/bin"
 ARG CLIENT="client"
-ARG TRINITY_USER="trinity"
-ARG TRINITY_USER_HOME="/home/${TRINITY_USER}"
+ARG TRINITY_USER_HOME="/root"
 ARG TRINITY_DIR="${TRINITY_USER_HOME}/server"
 ARG TRINITY_BIN_DIR="${TRINITY_DIR}/bin"
 ARG TRINITY_DATA_DIR="${TRINITY_DIR}/data"
@@ -41,23 +39,14 @@ rm ${TRINITY_BIN_DIR}/mapextractor \
     ${TRINITY_BIN_DIR}/vmap4assembler \
     ${TRINITY_BIN_DIR}/mmaps_generator && \
 sed 's|^DataDir = "."|DataDir = "${TRINITY_DATA_DIR}"|g; \
-     s|^Updates.EnableDatabases *= *[[:digit:]]|Updates.EnableDatabases = 0|g; \
-     s|^Updates.AutoSetup *= *[[:digit:]]|Updates.AutoSetup = 0|g;' \
-     etc/worldserver.conf.dist > etc/worldserver.conf && \
-sed 's|^Updates.EnableDatabases *= *[[:digit:]]|Updates.EnableDatabases = 0|g; \
-     s|^Updates.AutoSetup *= *[[:digit:]]|Updates.AutoSetup = 0|g;' \
-     etc/authserver.conf.dist > etc/authserver.conf && \
+     s|^Console.Enable *= *[[:digit:]]|Console.Enable = 0|g; \
+     s|^Ra.Enable *= *[[:digit:]]|Ra.Enable = 1|g;' \
+     etc/worldserver.conf.dist > etc/worldserver.conf.1.dist && \
+for CONF in worldserver.conf.1 authserver.conf; do \
+    sed 's|^Updates.EnableDatabases *= *[[:digit:]]|Updates.EnableDatabases = 0|g; \
+         s|^Updates.AutoSetup *= *[[:digit:]]|Updates.AutoSetup = 0|g;' \
+         "etc/$CONF.dist" > "etc/$CONF" && \
+done && \
 rm etc/*.dist
 
 WORKDIR ${TRINITY_BIN_DIR}
-
-# authserver
-EXPOSE 3724/tcp
-
-# worldserver
-EXPOSE 8085/tcp
-
-# copy and set the entry point
-COPY docker-entrypoint.sh ${BIN_DIR}
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["worldserver"]

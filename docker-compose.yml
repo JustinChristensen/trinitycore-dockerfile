@@ -1,0 +1,18 @@
+version: '3'
+services:
+    worldserver:
+        build: ./worldserver
+        depends_on: db
+        ports:
+        - "5432:5432"
+        env_file: ./worldserver/env
+    authserver:
+        build: ./authserver
+        depends_on: db
+        ports:
+        - "3724:3724"
+        env_file: ./authserver/env
+    db:
+        image: mariadb:10
+        ports:
+        - "127.0.0.1:3306:3306"

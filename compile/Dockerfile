@@ -6,11 +6,10 @@ version="1.0.0"
 
 ARG BUILD_VERBOSE
 ARG BUILD_JOBS=4
-ARG TRINITY_USER="trinity"
 ARG TRINITY_REPO="https://github.com/TrinityCore/TrinityCore.git"
 ARG TRINITY_REPO_DIR="TrinityCore"
 ARG TRINITY_BUILD_DIR="build"
-ARG TRINITY_USER_HOME="/home/${TRINITY_USER}"
+ARG TRINITY_USER_HOME="/root"
 ARG TRINITY_DIR="${TRINITY_USER_HOME}/server"
 ARG TRINITY_BIN_DIR="${TRINITY_DIR}/bin"
 ARG CMAKE_FLAGS="-DCMAKE_INSTALL_PREFIX=${TRINITY_DIR}"
@@ -37,12 +36,13 @@ libreadline-dev \
 libncurses-dev \
 libboost-all-dev \
 make \
-mariadb-server \
+mariadb-client \
 p7zip && \
 update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
-update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang 100 && \
-groupadd -r "${TRINITY_USER}" && \
-useradd -m -r -g "${TRINITY_USER}" -d "${TRINITY_USER_HOME}" -s /bin/bash "${TRINITY_USER}"
+update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang 100
+
+# groupadd -r "${TRINITY_USER}" && \
+# useradd -m -r -g "${TRINITY_USER}" -d "${TRINITY_USER_HOME}" -s /bin/bash "${TRINITY_USER}"
 
 # su to the trinitycore user
 WORKDIR ${TRINITY_USER_HOME}

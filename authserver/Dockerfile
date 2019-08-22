@@ -41,11 +41,12 @@ apt-get purge -y \
     cmake \
     curl \
     git \
-    libssl-dev \
-    libbz2-dev \
-    libreadline-dev \
-    libncurses-dev \
-    libboost-all-dev \
+#    libmariadb-dev-compat \
+#    libssl-dev \
+#    libbz2-dev \
+#    libreadline-dev \
+#    libncurses-dev \
+#    libboost-all-dev \
     make \
     p7zip && \
 apt-get autoremove -y && \

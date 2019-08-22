@@ -1,24 +1,45 @@
-version: '3'
+version: "3.7"
 services:
-    worldserver:
-        build: ./worldserver
-        depends_on: db
-        ports:
-        - "3443:3443"
-        - "8085:8085"
-        env:
-    authserver:
-        build: ./authserver
-        depends_on: db
-        ports:
-        - "3724:3724"
-        env:
-    db:
-        image: mariadb:10
-        ports:
-        - "127.0.0.1:3306:3306"
-volumes:
-secrets:
-
-# --mount type=bind,src=/host,dst=/host,consistency=delegated
+  worldserver:
+    image: trinitycore-worldserver
+    build:
+      context: ./worldserver
+    depends_on:
+      - db
+    ports:
+      - "3443:3443"
+      - "8085:8085"
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_ADMIN_USER: root
+      MYSQL_ADMIN_PASS: root
+      MYSQL_USER: trinity
+      MYSQL_PASS: trinity
+    volumes:
+      - type: bind
+        source: ./data
+        target: /usr/local/data
+        consistency: delegated
+  authserver:
+    image: trinitycore-authserver
+    build:
+      context: ./authserver
+    depends_on:
+      - db
+    ports:
+      - "3724:3724"
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_ADMIN_USER: root
+      MYSQL_ADMIN_PASS: root
+      MYSQL_USER: trinity
+      MYSQL_PASS: trinity
+  db:
+    image: mariadb:10
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
 

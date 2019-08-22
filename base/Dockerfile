@@ -4,13 +4,14 @@ LABEL \
 maintainer="justin@promise.io" \
 version="1.0.0"
 
-ARG TRINITY_REPO="https://github.com/TrinityCore/TrinityCore.git"
-ARG TRINITY_VERSION="3.3.5"
-ARG TRINITY_USER_HOME="/root"
-ARG TRINITY_REPO_DIR="${TRINITY_USER_HOME}/TrinityCore"
-ARG TRINITY_BUILD_DIR="${TRINITY_REPO_DIR}/build"
-ARG TRINITY_INSTALL_PREFIX="/usr/local"
-ARG CMAKE_FLAGS="-DCMAKE_INSTALL_PREFIX=${TRINITY_INSTALL_PREFIX}"
+ARG TRINITYCORE_VERSION="3.3.5"
+ARG TRINITYCORE_USER_HOME="/root"
+ARG TRINITYCORE_SOURCE_DIR="${TRINITYCORE_USER_HOME}/TrinityCore"
+ARG TRINITYCORE_BUILD_DIR="${TRINITYCORE_SOURCE_DIR}/build"
+ARG TRINITYCORE_INSTALL_PREFIX="/usr/local"
+ARG CMAKE_FLAGS="-DCMAKE_INSTALL_PREFIX=${TRINITYCORE_INSTALL_PREFIX}"
+
+ENV TRINITYCORE_VERSION="${TRINITYCORE_VERSION}"
 
 # install trinitycore dependencies
 RUN \
@@ -19,7 +20,6 @@ apt-get install -y \
     curl \
     clang \
     cmake \
-    git \
     libmariadb-dev-compat \
     libssl-dev \
     libbz2-dev \
@@ -30,17 +30,20 @@ apt-get install -y \
     mariadb-client \
     p7zip
 
-WORKDIR ${TRINITY_USER_HOME}
+WORKDIR ${TRINITYCORE_USER_HOME}
 
 # pull down trinitycore
-RUN git clone --depth=1 -b "${TRINITY_VERSION}" "${TRINITY_REPO}" "${TRINITY_REPO_DIR}"
+RUN \
+echo "Pulling down version ${TRINITYCORE_VERSION} of TrinityCore..." && \
+curl -o TrinityCore.tar.gz -sL "https://github.com/TrinityCore/TrinityCore/tarball/${TRINITYCORE_VERSION}" && \
+mkdir -p "${TRINITYCORE_SOURCE_DIR}" && tar -xvzf TrinityCore.tar.gz -C "${TRINITYCORE_SOURCE_DIR}" --strip-components=1
 
 # add the cmake wrapper
-ADD cmake.sh "${TRINITY_USER_HOME}"
+ADD cmake.sh "${TRINITYCORE_USER_HOME}"
 
 # run the cmake wrapper
 RUN \
-cd "${TRINITY_REPO_DIR}" && \
-mkdir -p "${TRINITY_BUILD_DIR}" && \
-cd "${TRINITY_BUILD_DIR}" && \
+cd "${TRINITYCORE_REPO_DIR}" && \
+mkdir -p "${TRINITYCORE_BUILD_DIR}" && \
+cd "${TRINITYCORE_BUILD_DIR}" && \
 "$HOME/cmake.sh" "${CMAKE_FLAGS}" ../

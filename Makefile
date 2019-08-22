@@ -13,6 +13,10 @@ authserver: base
 worldserver: base
 	docker build -t trinitycore-worldserver worldserver
 
-.PHONY: clean
-clean:
+.PHONY: start
+start:
+	./start.sh
+
+.PHONY: maintainer-clean
+maintainer-clean:
 	docker system prune -f --all

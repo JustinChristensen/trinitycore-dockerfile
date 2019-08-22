@@ -5,13 +5,14 @@ if ! [ "${MYSQL_PASS:-}" ] && [ "${MYSQL_PASS_FILE:-}" ]; then
     MYSQL_PASS=$(< "${MYSQL_PASS_FILE}")
 fi
 
+MYSQL_ADMIN_ARGS=(-h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_ADMIN_USER" -p"$MYSQL_ADMIN_PASS")
 MYSQL_ARGS=(-h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_USER" -p"$MYSQL_PASS")
 
 # run inside a mounted volume, writing extracted
 # files to the host if they're not already present
 if [ "$EXTRACT_DATA" = "1" ]; then
     echo "Extracting client data..."
-    cd "$TRINITY_DATA_DIR"
+    cd "$TRINITYCORE_DATA_DIR"
 
     if ! [ -d dbc ]; then
         mapextractor -i "${CLIENT_DIR}"
@@ -34,12 +35,13 @@ if [ "$EXTRACT_DATA" = "1" ]; then
 fi
 
 echo "Checking database connection..."
-mysql ${MYSQL_ARGS[@]} -e "SELECT version();"
+mysql ${MYSQL_ADMIN_ARGS[@]} -e "SELECT version();"
 
 echo "Creating databases..."
-cat create_mysql.sql | mysql ${MYSQL_ARGS[@]} && true
+cat create_mysql.sql | mysql ${MYSQL_ADMIN_ARGS[@]} && true
 
 echo "Downloading world database..."
+echo "Given url: $WORLD_DB_RELEASE"
 curl -Ls -o world_database.7z "$WORLD_DB_RELEASE"
 p7zip -f -d -c world_database.7z > world_database.sql
 rm world_database.7z
@@ -64,11 +66,11 @@ rm -r updates *.sql
 echo "Setting database configuration from env..."
 MYSQL_CONN_STRING="$MYSQL_HOST;$MYSQL_PORT;$MYSQL_USER;$MYSQL_PASS"
 sed -i \
-	's|^DataDir = "."|DataDir = "${TRINITY_DATA_DIR}"|g; \
+	's|^DataDir = "."|DataDir = "${TRINITYCORE_DATA_DIR}"|g; \
      s|^LoginDatabaseInfo *= *"[^"]*"|LoginDatabaseInfo = "'$MYSQL_CONN_STRING;auth'"|g; \
      s|^WorldDatabaseInfo *= *"[^"]*"|WorldDatabaseInfo = "'$MYSQL_CONN_STRING;world'"|g; \
      s|^CharacterDatabaseInfo *= *"[^"]*"|CharacterDatabaseInfo = "'$MYSQL_CONN_STRING;characters'"|g' \
-    "${TRINITY_INSTALL_PREFIX}/etc/worldserver.conf"
+    "${TRINITYCORE_INSTALL_PREFIX}/etc/worldserver.conf"
 
 exec "$@"
 

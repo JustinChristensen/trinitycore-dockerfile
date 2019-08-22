@@ -1,3 +1,4 @@
+.PHONY: all
 all: authserver worldserver
 
 .PHONY: base
@@ -10,7 +11,7 @@ authserver: base
 
 .PHONY: worldserver
 worldserver: base
-	docker build -t trinitycore-worldserver -f worldserver/Dockerfile .
+	docker build -t trinitycore-worldserver worldserver
 
 .PHONY: clean
 clean:

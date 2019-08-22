@@ -1,9 +1,13 @@
-# TrinityCore Dockerfile
+# TrinityCore Dockerfiles
 
 ## Requirements
 
 ## Usage
 
-### Build Args
+### Building
 
-### Environment Variables
+### Running
+
+## Known Issues
+
+

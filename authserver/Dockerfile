@@ -6,11 +6,11 @@ version="1.0.0"
 
 ARG BUILD_VERBOSE
 ARG BUILD_JOBS=4
-ARG BIN_DIR="/usr/local/bin"
 ARG TRINITY_USER_HOME="/root"
 ARG TRINITY_REPO_DIR="${TRINITY_USER_HOME}/TrinityCore"
 ARG TRINITY_BUILD_DIR="${TRINITY_REPO_DIR}/build"
 ARG TRINITY_INSTALL_PREFIX="/usr/local"
+ARG TRINITY_LOG_DIR="/var/log/authserver"
 
 ENV \
 MYSQL_USER="trinity" \
@@ -35,31 +35,28 @@ cd ../ && cp \
 cp -r sql/updates "{TRINITY_USER_HOME}" && \
 # remove the repo
 cd ../ && rm -r "${TRINITY_REPO_DIR}" && \
+mkdir -p "${TRINITY_LOG_DIR}" && \
+# update the configuration
+sed 's|^Updates.EnableDatabases *= *[[:digit:]]|Updates.EnableDatabases = 0|g; \
+     s|^Updates.AutoSetup *= *[[:digit:]]|Updates.AutoSetup = 0|g; \
+     s|^LogsDir *= *""|LogsDir = "${TRINITY_LOG_DIR}"|g;' \
+     "${TRINITY_INSTALL_PREFIX}/etc/authserver.conf.dist" > "${TRINITY_INSTALL_PREFIX}/etc/authserver.conf" && \
 # remove the dependencies
 apt-get purge -y \
     clang \
     cmake \
     curl \
     git \
-#    libmariadb-dev-compat \
-#    libssl-dev \
-#    libbz2-dev \
-#    libreadline-dev \
-#    libncurses-dev \
-#    libboost-all-dev \
     make \
     p7zip && \
 apt-get autoremove -y && \
-apt-get clean -y && \
-# update the configuration
-sed 's|^Updates.EnableDatabases *= *[[:digit:]]|Updates.EnableDatabases = 0|g; \
-     s|^Updates.AutoSetup *= *[[:digit:]]|Updates.AutoSetup = 0|g;' \
-     "${TRINITY_INSTALL_PREFIX}/etc/authserver.conf.dist" > "${TRINITY_INSTALL_PREFIX}/etc/authserver.conf"
+apt-get clean -y
 
 WORKDIR ${TRINITY_USER_HOME}
+
 EXPOSE 3724/tcp
 
 # copy and set the entrypoint
-COPY docker-entrypoint.sh ${BIN_DIR}
+COPY docker-entrypoint.sh /usr/local/bin
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["authserver"]

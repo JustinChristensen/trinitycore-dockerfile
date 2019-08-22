@@ -19,7 +19,6 @@ apt-get install -y \
     curl \
     clang \
     cmake \
-    gnupg \
     git \
     libmariadb-dev-compat \
     libssl-dev \

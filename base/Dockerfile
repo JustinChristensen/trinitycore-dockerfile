@@ -19,6 +19,7 @@ apt-get install -y \
     curl \
     clang \
     cmake \
+    gnupg \
     git \
     libmariadb-dev-compat \
     libssl-dev \
@@ -43,5 +44,4 @@ RUN \
 cd "${TRINITY_REPO_DIR}" && \
 mkdir -p "${TRINITY_BUILD_DIR}" && \
 cd "${TRINITY_BUILD_DIR}" && \
-"$HOME/cmake.sh" "${CMAKE_FLAGS}" ../ && \
-rm "$HOME/cmake.sh"
+"$HOME/cmake.sh" "${CMAKE_FLAGS}" ../

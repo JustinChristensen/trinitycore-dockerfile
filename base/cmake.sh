@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake \
-    -DCMAKE_EXE_LINKER_FLAGS="-static" \
+    -DCMAKE_LINKER="/usr/bin/ldd" \
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_FIND_LIBRARY_SUFFIXES=".a" \
     -DBoost_USE_STATIC_LIBS=ON \

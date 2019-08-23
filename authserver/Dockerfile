@@ -20,7 +20,10 @@ MYSQL_PASS="trinity" \
 MYSQL_PASS_FILE="" \
 MYSQL_HOST="127.0.0.1" \
 MYSQL_PORT="3306" \
-TRINITYCORE_INSTALL_PREFIX="${TRINITYCORE_INSTALL_PREFIX}"
+TRINITYCORE_INSTALL_PREFIX="${TRINITYCORE_INSTALL_PREFIX}" \
+CREATE_DATABASES=1 \
+CONNECT_RETRIES=6 \
+RETRY_INTERVAL=5
 
 WORKDIR ${TRINITYCORE_BUILD_DIR}
 
@@ -34,14 +37,14 @@ cd ../ && cp \
     sql/create/create_mysql.sql \
     sql/base/auth_database.sql \
     "${TRINITYCORE_USER_HOME}" && \
-cp -r sql/updates "{TRINITYCORE_USER_HOME}" && \
+cp -r sql/updates "${TRINITYCORE_USER_HOME}" && \
 # remove the sources
 cd ../ && rm -r "${TRINITYCORE_SOURCE_DIR}" TrinityCore.tar.gz && \
 mkdir -p "${TRINITYCORE_LOG_DIR}" && \
 # update the configuration
 sed 's|^Updates.EnableDatabases *= *[[:digit:]]|Updates.EnableDatabases = 0|g; \
      s|^Updates.AutoSetup *= *[[:digit:]]|Updates.AutoSetup = 0|g; \
-     s|^LogsDir *= *""|LogsDir = "${TRINITYCORE_LOG_DIR}"|g;' \
+     s|^LogsDir *= *""|LogsDir = "'${TRINITYCORE_LOG_DIR}'"|g;' \
      "${TRINITYCORE_INSTALL_PREFIX}/etc/authserver.conf.dist" > "${TRINITYCORE_INSTALL_PREFIX}/etc/authserver.conf" && \
 # remove the dependencies
 apt-get purge -y \
@@ -54,6 +57,8 @@ apt-get autoremove -y && \
 apt-get clean -y
 
 WORKDIR ${TRINITYCORE_USER_HOME}
+
+COPY create_root.sql ./
 
 EXPOSE 3724/tcp
 

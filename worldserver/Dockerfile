@@ -28,7 +28,10 @@ TRINITYCORE_INSTALL_PREFIX="${TRINITYCORE_INSTALL_PREFIX}" \
 TRINITYCORE_DATA_DIR="${TRINITYCORE_DATA_DIR}" \
 WORLD_DB_RELEASE="https://github.com/TrinityCore/TrinityCore/releases/download/TDB335.19081/TDB_full_world_335.19081_2019_08_16.7z" \
 EXTRACT_DATA="${BUILD_TOOLS}" \
-CLIENT_DIR="${CLIENT_DIR}"
+CLIENT_DIR="${CLIENT_DIR}" \
+CREATE_DATABASES=1 \
+CONNECT_RETRIES=6 \
+RETRY_INTERVAL=5
 
 WORKDIR ${TRINITYCORE_BUILD_DIR}
 
@@ -47,7 +50,7 @@ cd ../ && cp \
     sql/base/auth_database.sql \
 	sql/base/characters_database.sql \
     "${TRINITYCORE_USER_HOME}" && \
-cp -r sql/updates "{TRINITYCORE_USER_HOME}" && \
+cp -r sql/updates "${TRINITYCORE_USER_HOME}" && \
 # remove the sources
 cd ../ && rm -r "${TRINITYCORE_SOURCE_DIR}" TrinityCore.tar.gz && \
 mkdir -p "${TRINITYCORE_LOG_DIR}" && \
@@ -55,7 +58,7 @@ mkdir -p "${TRINITYCORE_LOG_DIR}" && \
 sed 's|^Updates.EnableDatabases *= *[[:digit:]]|Updates.EnableDatabases = 0|g; \
      s|^Updates.AutoSetup *= *[[:digit:]]|Updates.AutoSetup = 0|g; \
      s|^Console.Enable *= *[[:digit:]]|Console.Enable = 0|g; \
-     s|^LogsDir *= *""|LogsDir = "${TRINITYCORE_LOG_DIR}"|g; \
+     s|^LogsDir *= *""|LogsDir = "'${TRINITYCORE_LOG_DIR}'"|g; \
      s|^Ra.Enable *= *[[:digit:]]|Ra.Enable = 1|g;' \
      "${TRINITYCORE_INSTALL_PREFIX}/etc/worldserver.conf.dist" > "${TRINITYCORE_INSTALL_PREFIX}/etc/worldserver.conf" && \
 # remove the dependencies

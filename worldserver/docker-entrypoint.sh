@@ -34,43 +34,52 @@ if [ "$EXTRACT_DATA" = "1" ]; then
     fi
 fi
 
+cd ~
+
 echo "Checking database connection..."
-mysql ${MYSQL_ADMIN_ARGS[@]} -e "SELECT version();"
-
-echo "Creating databases..."
-cat create_mysql.sql | mysql ${MYSQL_ADMIN_ARGS[@]} && true
-
-echo "Downloading world database..."
-echo "Given url: $WORLD_DB_RELEASE"
-curl -Ls -o world_database.7z "$WORLD_DB_RELEASE"
-p7zip -f -d -c world_database.7z > world_database.sql
-rm world_database.7z
-
-echo "Creating and populating tables..."
-cat auth_database.sql | mysql ${MYSQL_ARGS[@]} auth
-cat characters_database.sql | mysql ${MYSQL_ARGS[@]} characters
-cat world_database.sql | mysql ${MYSQL_ARGS[@]} world
-
-echo "Running updates..."
-for F in updates/auth/3.3.5/*.sql; do
-    cat "$F" | mysql ${MYSQL_ARGS[@]} auth && true
+set +e
+for _ in $(seq 1 $CONNECT_RETRIES); do
+    mysql ${MYSQL_ADMIN_ARGS[@]} -e "SELECT version();"
+    connected=$?
+    [ $connected -eq 0 ] && break || sleep $RETRY_INTERVAL
 done
-for DB in characters world; do
-    for F in updates/$DB/3.3.5/*.sql; do
-        cat "$F" | mysql ${MYSQL_ARGS[@]} "$DB"
+[ $connected -ne 0 ] && exit $connected
+set -e
+
+if [ "$CREATE_DATABASES" = "1" ]; then
+    echo "Creating databases..."
+    sed "s|@'localhost'||g" create_mysql.sql | mysql ${MYSQL_ADMIN_ARGS[@]} && true
+
+    echo "Downloading world database..."
+    echo "Given url: $WORLD_DB_RELEASE"
+    curl -Ls -o world_database.7z "$WORLD_DB_RELEASE"
+    p7zip -f -d -c world_database.7z > world_database.sql
+    rm world_database.7z
+
+    echo "Creating and populating tables..."
+    cat auth_database.sql | mysql ${MYSQL_ARGS[@]} auth
+    cat characters_database.sql | mysql ${MYSQL_ARGS[@]} characters
+    cat world_database.sql | mysql ${MYSQL_ARGS[@]} world
+
+    echo "Running updates..."
+    for F in updates/auth/3.3.5/*.sql; do
+        cat "$F" | mysql ${MYSQL_ARGS[@]} auth && true
     done
-done
-
-rm -r updates *.sql
+    for DB in characters world; do
+        for F in updates/$DB/3.3.5/*.sql; do
+            cat "$F" | mysql ${MYSQL_ARGS[@]} "$DB"
+        done
+    done
+fi
 
 echo "Setting database configuration from env..."
 MYSQL_CONN_STRING="$MYSQL_HOST;$MYSQL_PORT;$MYSQL_USER;$MYSQL_PASS"
-sed -i \
-	's|^DataDir = "."|DataDir = "${TRINITYCORE_DATA_DIR}"|g; \
-     s|^LoginDatabaseInfo *= *"[^"]*"|LoginDatabaseInfo = "'$MYSQL_CONN_STRING;auth'"|g; \
-     s|^WorldDatabaseInfo *= *"[^"]*"|WorldDatabaseInfo = "'$MYSQL_CONN_STRING;world'"|g; \
-     s|^CharacterDatabaseInfo *= *"[^"]*"|CharacterDatabaseInfo = "'$MYSQL_CONN_STRING;characters'"|g' \
-    "${TRINITYCORE_INSTALL_PREFIX}/etc/worldserver.conf"
+cat <<SCRIPT | sed -i -f- "${TRINITYCORE_INSTALL_PREFIX}/etc/worldserver.conf"
+     s|^DataDir *= *"\."|DataDir = "${TRINITYCORE_DATA_DIR}"|g
+     s|^LoginDatabaseInfo *= *"[^"]*"|LoginDatabaseInfo = "$MYSQL_CONN_STRING;auth"|g
+     s|^WorldDatabaseInfo *= *"[^"]*"|WorldDatabaseInfo = "$MYSQL_CONN_STRING;world"|g
+     s|^CharacterDatabaseInfo *= *"[^"]*"|CharacterDatabaseInfo = "$MYSQL_CONN_STRING;characters"|g
+SCRIPT
 
 exec "$@"
 

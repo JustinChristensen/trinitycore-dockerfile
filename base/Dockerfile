@@ -43,7 +43,7 @@ ADD cmake.sh "${TRINITYCORE_USER_HOME}"
 
 # run the cmake wrapper
 RUN \
-cd "${TRINITYCORE_REPO_DIR}" && \
+cd "${TRINITYCORE_SOURCE_DIR}" && \
 mkdir -p "${TRINITYCORE_BUILD_DIR}" && \
 cd "${TRINITYCORE_BUILD_DIR}" && \
 "$HOME/cmake.sh" "${CMAKE_FLAGS}" ../

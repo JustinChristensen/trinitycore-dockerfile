@@ -4,8 +4,6 @@ services:
     image: trinitycore-worldserver
     build:
       context: ./worldserver
-    depends_on:
-      - db
     ports:
       - "3443:3443"
       - "8085:8085"
@@ -25,8 +23,6 @@ services:
     image: trinitycore-authserver
     build:
       context: ./authserver
-    depends_on:
-      - db
     ports:
       - "3724:3724"
     environment:
@@ -42,4 +38,3 @@ services:
       - "127.0.0.1:3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
-

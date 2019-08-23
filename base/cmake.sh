@@ -4,7 +4,7 @@ cmake "$@" \
 	-DCMAKE_C_COMPILER=/usr/bin/clang \
 	-DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
     -DWITHOUT_GIT=ON
-	# -DCMAKE_EXE_LINKER_FLAGS="-static" \
+	#-DCMAKE_EXE_LINKER_FLAGS="-static" \
     #-DBUILD_SHARED_LIBS=OFF \
     #-DCMAKE_FIND_LIBRARY_SUFFIXES=".a" \
     #-DBoost_USE_STATIC_LIBS=ON \

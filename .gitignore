@@ -1,3 +1,5 @@
 .DS_Store
 client/
 data/
+client
+data

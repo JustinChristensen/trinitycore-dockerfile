@@ -43,3 +43,4 @@ cat <<SCRIPT | sed -i -f- "${TRINITYCORE_INSTALL_PREFIX}/etc/authserver.conf"
 SCRIPT
 
 exec "$@"
+

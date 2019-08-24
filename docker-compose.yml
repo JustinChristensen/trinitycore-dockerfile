@@ -16,8 +16,13 @@ services:
       MYSQL_PASS: trinity
     volumes:
       - type: bind
-        source: ./data
+        source: "${DATA_DIR}"
         target: /usr/local/data
+        consistency: delegated
+      - type: bind
+        read_only: true
+        source: "${CLIENT_DIR}"
+        target: /usr/local/client
         consistency: delegated
   authserver:
     image: trinitycore-authserver

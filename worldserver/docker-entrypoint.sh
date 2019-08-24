@@ -57,14 +57,10 @@ if [ "$CREATE_DATABASES" = "1" ]; then
     rm world_database.7z
 
     echo "Creating and populating tables..."
-    cat auth_database.sql | mysql ${MYSQL_ARGS[@]} auth
     cat characters_database.sql | mysql ${MYSQL_ARGS[@]} characters
     cat world_database.sql | mysql ${MYSQL_ARGS[@]} world
 
     echo "Running updates..."
-    for F in updates/auth/3.3.5/*.sql; do
-        cat "$F" | mysql ${MYSQL_ARGS[@]} auth && true
-    done
     for DB in characters world; do
         for F in updates/$DB/3.3.5/*.sql; do
             cat "$F" | mysql ${MYSQL_ARGS[@]} "$DB"

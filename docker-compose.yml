@@ -5,8 +5,8 @@ services:
     build:
       context: ./worldserver
     ports:
-      - "3443:3443"
-      - "8085:8085"
+      - "3443:3443/tcp"
+      - "8085:8085/tcp"
     environment:
       MYSQL_HOST: db
       MYSQL_PORT: 3306
@@ -21,7 +21,7 @@ services:
     build:
       context: ./authserver
     ports:
-      - "3724:3724"
+      - "3724:3724/tcp"
     environment:
       MYSQL_HOST: db
       MYSQL_PORT: 3306

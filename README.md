@@ -5,7 +5,7 @@ WoW Client's data, managing the database, and configuring your network by abstra
 
 ## Requirements
 
-The scripts and configuration in this repository depend recent versions of [docker] and [docker-compose]. Click the links
+The scripts and configuration in this repository depend on recent versions of [docker] and [docker-compose]. Click the links
 and follow the installation instructions for your system.
 
 ## Usage

@@ -8,7 +8,15 @@ export CLIENT_DIR="${CLIENT_DIR:-client}"
 
 echo "Loading client Data directory..."
 docker volume create trinitycore-data > /dev/null
-docker run --rm -t -v "$(pwd)/$CLIENT_DIR:/client:cached" -v trinitycore-data:/data debian:buster-slim cp -rn /client/Data /data
+cat <<SCRIPT | docker run --rm -i -v "$(pwd)/$CLIENT_DIR:/client:cached" -v trinitycore-data:/data debian:buster-slim
+#!/usr/bin/env bash
+for D in dbc maps vmaps mmaps Data; do
+    if [ -d /client/\$D ]; then
+        echo "Copying \$D to the data volume..."
+        cp -rn /client/\$D /data
+    fi
+done
+SCRIPT
 
 echo "Building..."
 docker build -t trinitycore-base --build-arg TRINITYCORE_VERSION base

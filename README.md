@@ -149,7 +149,7 @@ ENV MYSQL_PASS              # the mysql user the server uses to connect
 ENV MYSQL_HOST              # the hostname or ip of the database server
 ENV MYSQL_PORT              # the port number for the database server
 ENV WORLD_DB_RELEASE        # the specific database release to download, see ./start.sh in this repository
-ENV EXTRACT_DATA            # whether or not to extract the data WoW client's Data directory, defaults to true
+ENV EXTRACT_DATA            # whether or not to extract the data WoW clients Data directory, defaults to true
 ENV CREATE_DATABASES        # whether or not to create the database and load them with data on startup
 ENV CONNECT_RETRIES         # how many times the container should try to connect to the database server before giving up
 ENV RETRY_INTERVAL          # the period of time between each connection attempt

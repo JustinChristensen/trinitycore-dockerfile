@@ -15,15 +15,7 @@ services:
       MYSQL_USER: trinity
       MYSQL_PASS: trinity
     volumes:
-      - type: bind
-        source: "${DATA_DIR}"
-        target: /usr/local/data
-        consistency: delegated
-      - type: bind
-        read_only: true
-        source: "${CLIENT_DIR}"
-        target: /usr/local/client
-        consistency: delegated
+      - trinitycore-data:/usr/local/data
   authserver:
     image: trinitycore-authserver
     build:
@@ -43,3 +35,9 @@ services:
       - "127.0.0.1:3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql-data:/var/lib/mysql
+volumes:
+  trinitycore-data:
+    external: true
+  mysql-data:

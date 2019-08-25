@@ -20,3 +20,4 @@ start:
 .PHONY: maintainer-clean
 maintainer-clean:
 	docker system prune -f --all
+	docker volume prune -f

@@ -138,7 +138,7 @@ The container entrypoints work as follows:
 
 #### Environment Variables
 
-The environment variables available to tweak the behavior of your containers at runtime are. See the Dockerfiles for defaults:
+The environment variables available to tweak the behavior of your containers at runtime are as follows. See the Dockerfiles for defaults:
 
 **worldserver**
 ```Dockerfile

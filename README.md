@@ -28,8 +28,9 @@ and follow the installation instructions for your system.
 #### TL;DR
 
 ```bash
-export TRINITYCORE_VERSION="3.3.5"
-docker build -t trinitycore-base --build-arg TRINITYCORE_VERSION base
+git clone https://github.com/JustinChristensen/trinitycore-dockerfile.git 
+cd trinitycore-dockerfile
+TRINITYCORE_VERSION="3.3.5" docker build -t trinitycore-base --build-arg TRINITYCORE_VERSION base
 docker build -t trinitycore-authserver authserver
 docker build -t trinitycore-worldserver worldserver
 ```
@@ -40,8 +41,7 @@ The **[authserver]** and **[worldserver]** images are both based on the trinityc
 To build base run:
 
 ```bash
-export TRINITYCORE_VERSION="3.3.5"      
-docker build -t trinitycore-base --build-arg TRINITYCORE_VERSION base
+TRINITYCORE_VERSION="3.3.5" docker build -t trinitycore-base --build-arg TRINITYCORE_VERSION base
 ```
 
 After the build of base succeeds, build the authserver and worldserver images with:
@@ -117,7 +117,11 @@ If this succeeds, you can then run containers for the database, authserver, and 
 docker-compose up
 ```
 
-And you should be all set! Open up WoW, and use **root** and **root** for the username and password, respectively. See [Creating Accounts](#creating-accounts) for more information
+And you should be all set! 
+
+Configure your WoW client to connect to your running servers by [following these instructions](https://trinitycore.atlassian.net/wiki/spaces/tc/pages/74006268/Client+Setup).
+
+Then, open up WoW, and use **root** and **root** for the username and password, respectively. See [Creating Accounts](#creating-accounts) for more information
 on creating accounts outside of the game.
 
 The container entrypoints work as follows:

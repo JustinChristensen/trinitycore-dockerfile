@@ -1,6 +1,6 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: Issue
+about: Submit an issue
 title: ''
 labels: ''
 assignees: JustinChristensen

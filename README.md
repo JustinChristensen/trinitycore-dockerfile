@@ -3,10 +3,12 @@
 This project is an attempt to absolve you of the need to worry about the details of compiling TrinityCore, extracting your
 WoW Client's data, managing the database, and configuring your network by abstracting it away behind Docker. 
 
-## Requirements
+## System Requirements
 
 The scripts and configuration in this repository depend on recent versions of [docker] and [docker-compose]. Click the links
 and follow the installation instructions for your system.
+
+You'll also need version 3.3.5a of World of Warcraft.
 
 ## Usage
 
@@ -91,9 +93,8 @@ CLIENT_DIR=/absolute/path/to/client ./start.sh
 
 # worldserver's entrypoint expects a named volume, trinitycore-data, to contain the WoW client's Data directory
 # execute the following:
-export CLIENT_DIR=/absolute/path/to/client 
 docker volume create trinitycore-data > /dev/null
-docker run --rm -i -v "$CLIENT_DIR:/client:cached" -v trinitycore-data:/data debian:buster-slim cp -rn /client/Data /data
+CLIENT_DIR=/absolute/path/to/client docker run --rm -i -v "$CLIENT_DIR:/client:cached" -v trinitycore-data:/data debian:buster-slim cp -rn /client/Data /data
 
 # start docker compose
 docker-compose up

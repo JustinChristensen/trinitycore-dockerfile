@@ -3,7 +3,7 @@
 This project is an attempt to absolve you of the need to worry about the details of compiling TrinityCore, extracting your
 WoW Client's data, managing the database, and configuring your network by abstracting it away behind Docker. 
 
-** Important **
+** **Important** **
 
 If you like what you see here and want to see TrinityCore officially support Docker, make some noise here:  
 https://github.com/TrinityCore/TrinityCore/issues/23741

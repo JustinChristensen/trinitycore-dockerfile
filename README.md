@@ -17,6 +17,14 @@ You'll also need version 3.3.5a of World of Warcraft.
 
 ## Usage
 
+### Quickstart
+
+```bash
+git clone https://github.com/JustinChristensen/trinitycore-dockerfile.git 
+cd trinitycore-dockerfile
+TRINITYCORE_VERSION=10f6e3818578410246750c6fce53d189ad05bee4 CLIENT_DIR=/absolute/path/to/client ./start.sh
+```
+
 ### Building
 
 ```
@@ -37,7 +45,7 @@ You'll also need version 3.3.5a of World of Warcraft.
 ```bash
 git clone https://github.com/JustinChristensen/trinitycore-dockerfile.git 
 cd trinitycore-dockerfile
-TRINITYCORE_VERSION="3.3.5" docker build -t trinitycore-base --build-arg TRINITYCORE_VERSION base
+TRINITYCORE_VERSION=10f6e3818578410246750c6fce53d189ad05bee4 docker build -t trinitycore-base --build-arg TRINITYCORE_VERSION base
 docker build -t trinitycore-authserver authserver
 docker build -t trinitycore-worldserver worldserver
 ```

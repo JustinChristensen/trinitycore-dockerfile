@@ -16,6 +16,7 @@ services:
       MYSQL_PASS: trinity
     volumes:
       - trinitycore-data:/usr/local/data
+    tty: true
   authserver:
     image: trinitycore-authserver
     build:
@@ -29,6 +30,7 @@ services:
       MYSQL_ADMIN_PASS: root
       MYSQL_USER: trinity
       MYSQL_PASS: trinity
+    tty: true
   db:
     image: mariadb:10
     ports:
